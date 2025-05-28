@@ -28,6 +28,9 @@ process ANTISMASH {
     --output-dir ${meta.prefix}_results \\
     ${gbk}
 
+    # To fix issue with 'file changed as we read it' error from tar
+    sleep 30
+
     tar -czf ${meta.prefix}_antismash.tar.gz ${meta.prefix}_results
 
     cat <<-END_VERSIONS > versions.yml

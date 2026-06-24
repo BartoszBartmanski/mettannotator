@@ -18,9 +18,7 @@ process DBCAN_GETDB {
     # bcb.unl.edu URL is dead (302-redirects to the dbCAN homepage), and S3 only serves
     # XML listings, so wget -r cannot crawl it. run_dbcan also names the files exactly
     # as the tool expects (e.g. dbCAN-sub.hmm), so no manual renaming is needed.
-    run_dbcan database \\
-        --db_dir dbcan \\
-        --aws_s3
+    run_dbcan database --db_dir dbcan
 
     echo 'v5-2_9-13-2025' > dbcan/VERSION.txt
     """

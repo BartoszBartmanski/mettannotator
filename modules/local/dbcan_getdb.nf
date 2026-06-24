@@ -3,8 +3,8 @@ process DBCAN_GETDB {
     tag "DBCan v5-2_9-13-2025"
 
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
-        'https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h36e9172_9' :
-        'biocontainers/gnu-wget:1.18--h36e9172_9' }"
+        'https://depot.galaxyproject.org/singularity/dbcan%3A5.1.2--pyhdfd78af_0' :
+        'biocontainers/dbcan-5.1.2--pyhdfd78af_0' }"
 
     publishDir "${params.dbs}", mode: 'copy'
 
@@ -14,17 +14,14 @@ process DBCAN_GETDB {
 
     script:
     """
-    wget -r -np -nH --cut-dirs=3 --reject "index.html*" https://bcb.unl.edu/dbCAN2/download/run_dbCAN_database_total/db_v5-2_9-13-2025/
-
-    mv db_v5-2_9-13-2025 dbcan/
-
-    # there is a mismatch between the expected name of the sub db and the way it is named in the database
-    # the code below is a temporary fix for this until it is properly addressed by the tool developers
-    if [ -f "dbcan/dbCAN_sub.hmm" ]; then
-        mv "dbcan/dbCAN_sub.hmm" "dbcan/dbCAN-sub.hmm"
-    fi
+    # Use the tool's own downloader against the pinned AWS S3 release. The previous
+    # bcb.unl.edu URL is dead (302-redirects to the dbCAN homepage), and S3 only serves
+    # XML listings, so wget -r cannot crawl it. run_dbcan also names the files exactly
+    # as the tool expects (e.g. dbCAN-sub.hmm), so no manual renaming is needed.
+    run_dbcan database \\
+        --db_dir dbcan \\
+        --aws_s3
 
     echo 'v5-2_9-13-2025' > dbcan/VERSION.txt
-
     """
 }

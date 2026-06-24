@@ -74,8 +74,8 @@ workflow DOWNLOAD_DATABASES {
             defense_finder_db = DEFENSE_FINDER_GETDB.out.defense_finder_db.first()
         }
 
-        if (dbcan_dir.exists()) {
-            log.info("DBCan database exists, or at least the expected folder.")
+        if (file("${dbcan_dir}/CAZy.dmnd").exists()) {
+            log.info("DBCan database exists (CAZy.dmnd found).")
             dbcan_db = tuple(
                 dbcan_dir,
                 file("${dbcan_dir}/VERSION.txt", checkIfExists: true).text // the DB version
